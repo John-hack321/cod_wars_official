@@ -1,0 +1,378 @@
+🎮 WageWars - Optimized Project Structure
+📁 Project Structure
+wagewars/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── deploy.yml
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py                    # FastAPI app entry point
+│   │   ├── api/
+│   │   │   ├── __init__.py
+│   │   │   ├── deps.py               # Dependencies (auth, db)
+│   │   │   ├── routes/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── auth.py           # Login, register, JWT
+│   │   │   │   ├── users.py          # User profile, stats
+│   │   │   │   ├── matches.py        # Match CRUD, verification
+│   │   │   │   ├── matchmaking.py    # Queue, finding opponents
+│   │   │   │   ├── payments.py       # M-Pesa integration
+│   │   │   │   ├── tournaments.py    # Tournament management
+│   │   │   │   └── notifications.py  # Push notifications
+│   │   │   └── websocket.py          # WebSocket handlers
+│   │   ├── core/
+│   │   │   ├── __init__.py
+│   │   │   ├── config.py             # Settings using Pydantic
+│   │   │   ├── security.py           # JWT, password hashing
+│   │   │   └── database.py           # SQLAlchemy setup
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py               # Base SQLAlchemy model
+│   │   │   ├── user.py               # User, PlayerStats models
+│   │   │   ├── match.py              # Match, MatchmakingQueue
+│   │   │   ├── tournament.py         # Tournament models
+│   │   │   ├── transaction.py        # Payment models
+│   │   │   └── notification.py       # Notification model
+│   │   ├── schemas/
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py               # Pydantic schemas
+│   │   │   ├── match.py
+│   │   │   ├── tournament.py
+│   │   │   ├── transaction.py
+│   │   │   └── notification.py
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth.py               # Auth business logic
+│   │   │   ├── matchmaking.py        # Matchmaking algorithm
+│   │   │   ├── match.py              # Match management
+│   │   │   ├── mpesa.py              # M-Pesa Daraja API
+│   │   │   ├── cod_api.py            # COD API integration
+│   │   │   └── notifications.py      # Push/SMS services
+│   │   ├── utils/
+│   │   │   ├── __init__.py
+│   │   │   ├── validators.py
+│   │   │   └── helpers.py
+│   │   └── tests/
+│   │       ├── __init__.py
+│   │       ├── conftest.py           # Pytest fixtures
+│   │       ├── test_auth.py
+│   │       ├── test_matches.py
+│   │       └── test_payments.py
+│   ├── alembic/                      # Database migrations
+│   │   ├── env.py
+│   │   └── versions/
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   ├── .env.example
+│   └── pytest.ini
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── ui/                   # Reusable UI components
+│   │   │   │   ├── Button.tsx
+│   │   │   │   ├── Input.tsx
+│   │   │   │   ├── Modal.tsx
+│   │   │   │   ├── Toast.tsx
+│   │   │   │   └── LoadingSpinner.tsx
+│   │   │   ├── layout/
+│   │   │   │   ├── Layout.tsx
+│   │   │   │   ├── Navbar.tsx
+│   │   │   │   └── Sidebar.tsx
+│   │   │   ├── auth/
+│   │   │   │   ├── LoginForm.tsx
+│   │   │   │   ├── RegisterForm.tsx
+│   │   │   │   └── ProtectedRoute.tsx
+│   │   │   ├── matches/
+│   │   │   │   ├── WagerSelector.tsx
+│   │   │   │   ├── MatchmakingQueue.tsx
+│   │   │   │   ├── ActiveMatch.tsx
+│   │   │   │   ├── MatchVerification.tsx
+│   │   │   │   └── MatchHistory.tsx
+│   │   │   ├── payments/
+│   │   │   │   ├── PaymentModal.tsx
+│   │   │   │   ├── WalletBalance.tsx
+│   │   │   │   └── TransactionHistory.tsx
+│   │   │   ├── tournaments/
+│   │   │   │   ├── TournamentCard.tsx
+│   │   │   │   ├── TournamentBracket.tsx
+│   │   │   │   └── TournamentStats.tsx
+│   │   │   └── profile/
+│   │   │       ├── UserProfile.tsx
+│   │   │       ├── PlayerStats.tsx
+│   │   │       └── Leaderboard.tsx
+│   │   ├── pages/
+│   │   │   ├── _app.tsx              # App wrapper with providers
+│   │   │   ├── _document.tsx         # Custom document
+│   │   │   ├── index.tsx             # Landing page
+│   │   │   ├── dashboard.tsx         # Main dashboard
+│   │   │   ├── auth/
+│   │   │   │   ├── login.tsx
+│   │   │   │   └── register.tsx
+│   │   │   ├── matches/
+│   │   │   │   ├── find.tsx          # Matchmaking
+│   │   │   │   ├── active.tsx        # Active matches
+│   │   │   │   ├── history.tsx       # Match history
+│   │   │   │   └── [id].tsx          # Match details
+│   │   │   ├── tournaments/
+│   │   │   │   ├── index.tsx         # Tournament list
+│   │   │   │   └── [id].tsx          # Tournament details
+│   │   │   ├── profile/
+│   │   │   │   └── index.tsx         # User profile
+│   │   │   ├── leaderboard.tsx
+│   │   │   ├── wallet.tsx
+│   │   │   └── api/                  # API routes (minimal usage)
+│   │   │       └── webhook.ts        # M-Pesa webhooks
+│   │   ├── lib/
+│   │   │   ├── api.ts                # Axios client with interceptors
+│   │   │   ├── auth.ts               # Auth utilities
+│   │   │   ├── websocket.ts          # WebSocket client
+│   │   │   ├── storage.ts            # Local storage utilities
+│   │   │   ├── validators.ts         # Form validation schemas
+│   │   │   └── utils.ts              # General utilities
+│   │   ├── hooks/
+│   │   │   ├── useAuth.ts
+│   │   │   ├── useWebSocket.ts
+│   │   │   ├── useMatchmaking.ts
+│   │   │   ├── useApi.ts             # React Query hooks
+│   │   │   └── useNotifications.ts
+│   │   ├── context/
+│   │   │   ├── AuthContext.tsx
+│   │   │   ├── WebSocketContext.tsx
+│   │   │   └── NotificationContext.tsx
+│   │   ├── types/
+│   │   │   ├── auth.ts
+│   │   │   ├── user.ts
+│   │   │   ├── match.ts
+│   │   │   ├── tournament.ts
+│   │   │   ├── transaction.ts
+│   │   │   └── api.ts
+│   │   └── styles/
+│   │       ├── globals.css
+│   │       └── components.css
+│   ├── public/
+│   │   ├── manifest.json
+│   │   ├── sw.js                     # Service worker for PWA
+│   │   └── icons/
+│   ├── package.json
+│   ├── next.config.js
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   ├── Dockerfile
+│   └── .env.local.example
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── nginx.conf
+├── .env.example
+├── .gitignore
+└── README.md
+🗄️ Optimized Database Schema
+sql-- Users table with essential fields
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(15) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    wallet_balance DECIMAL(10,2) DEFAULT 0.00,
+    cod_username VARCHAR(50),
+    profile_image_url VARCHAR(255),
+    is_verified BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Player statistics
+CREATE TABLE player_stats (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    total_matches INTEGER DEFAULT 0,
+    wins INTEGER DEFAULT 0,
+    losses INTEGER DEFAULT 0,
+    total_wagered DECIMAL(10,2) DEFAULT 0.00,
+    total_winnings DECIMAL(10,2) DEFAULT 0.00,
+    current_rank INTEGER DEFAULT 1000,
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Matches with simplified structure
+CREATE TABLE matches (
+    id SERIAL PRIMARY KEY,
+    player1_id INTEGER REFERENCES users(id),
+    player2_id INTEGER REFERENCES users(id),
+    wager_amount DECIMAL(10,2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending', -- pending, active, completed, disputed
+    winner_id INTEGER REFERENCES users(id),
+    player1_confirmed BOOLEAN DEFAULT FALSE,
+    player2_confirmed BOOLEAN DEFAULT FALSE,
+    cod_match_data JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT NOW(),
+    started_at TIMESTAMP,
+    completed_at TIMESTAMP
+);
+
+-- Simplified transactions
+CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    match_id INTEGER REFERENCES matches(id),
+    type VARCHAR(20) NOT NULL, -- deposit, wager_hold, wager_win, withdrawal
+    amount DECIMAL(10,2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending', -- pending, completed, failed
+    mpesa_reference VARCHAR(100),
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Matchmaking queue
+CREATE TABLE matchmaking_queue (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    wager_amount DECIMAL(10,2) NOT NULL,
+    skill_range_min INTEGER DEFAULT 900,
+    skill_range_max INTEGER DEFAULT 1100,
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(user_id)
+);
+
+-- Notifications
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    type VARCHAR(50) NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tournaments (simplified)
+CREATE TABLE tournaments (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    entry_fee DECIMAL(10,2) NOT NULL,
+    max_participants INTEGER NOT NULL,
+    current_participants INTEGER DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'upcoming',
+    start_date TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tournament participants
+CREATE TABLE tournament_participants (
+    id SERIAL PRIMARY KEY,
+    tournament_id INTEGER REFERENCES tournaments(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    eliminated BOOLEAN DEFAULT FALSE,
+    joined_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(tournament_id, user_id)
+);
+
+-- Essential indexes
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_matches_status ON matches(status);
+CREATE INDEX idx_matches_players ON matches(player1_id, player2_id);
+CREATE INDEX idx_transactions_user_id ON transactions(user_id);
+CREATE INDEX idx_matchmaking_queue_wager ON matchmaking_queue(wager_amount);
+CREATE INDEX idx_notifications_user_read ON notifications(user_id, is_read);
+🔧 Key Technologies & Dependencies
+Backend (FastAPI)
+txtfastapi==0.104.1
+uvicorn[standard]==0.24.0
+sqlalchemy==2.0.23
+alembic==1.12.1
+psycopg2-binary==2.9.7
+pydantic==2.5.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+websockets==12.0
+httpx==0.25.2
+redis==5.0.1
+celery==5.3.4
+python-dotenv==1.0.0
+pytest==7.4.3
+pytest-asyncio==0.21.1
+Frontend (Next.js TypeScript)
+json{
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.2.0",
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "tailwindcss": "^3.3.0",
+    "axios": "^1.6.0",
+    "@tanstack/react-query": "^5.0.0",
+    "react-hook-form": "^7.47.0",
+    "@hookform/resolvers": "^3.3.0",
+    "zod": "^3.22.0",
+    "socket.io-client": "^4.7.0",
+    "react-hot-toast": "^2.4.0",
+    "next-pwa": "^5.6.0",
+    "lucide-react": "^0.294.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.52.0",
+    "eslint-config-next": "^14.0.0",
+    "@types/socket.io-client": "^3.0.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0"
+  }
+}
+🏗️ Development Workflow
+1. Backend Setup
+bashcd backend
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload
+2. Frontend Setup
+bashcd frontend
+npm install
+npm run dev
+3. Database Setup
+bashdocker run --name wagewars-db -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:15
+📱 Progressive Web App Features
+
+Service Worker: Offline support for basic functionality
+Push Notifications: Match found, payment received, etc.
+App-like Experience: Install on mobile devices
+Responsive Design: Mobile-first approach
+
+🔐 Security Considerations
+
+JWT Authentication: Access and refresh tokens
+Password Hashing: bcrypt for secure password storage
+Input Validation: Pydantic schemas on backend, Zod on frontend
+CORS Configuration: Proper CORS setup for production
+Rate Limiting: Prevent API abuse
+SQL Injection Prevention: SQLAlchemy ORM protection
+
+🚀 Deployment Strategy
+Production Stack
+
+Frontend: Vercel or Netlify
+Backend: Railway, DigitalOcean App Platform, or AWS ECS
+Database: Managed PostgreSQL (AWS RDS, DigitalOcean Managed Database)
+Redis: For caching and WebSocket scaling
+CDN: Cloudflare for static assets
+
+Environment Variables
+bash# Backend
+DATABASE_URL=postgresql://user:pass@localhost/wagewars
+SECRET_KEY=your-secret-key
+MPESA_CONSUMER_KEY=your-mpesa-key
+MPESA_CONSUMER_SECRET=your-mpesa-secret
+COD_API_KEY=your-cod-api-key
+REDIS_URL=redis://localhost:6379
+
+# Frontend
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
