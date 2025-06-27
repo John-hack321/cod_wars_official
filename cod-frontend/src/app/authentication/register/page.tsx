@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Input from '../../components/ui/input';
 import Button from '../../components/ui/button';
 import Link from 'next/link';
@@ -16,6 +17,7 @@ const RegisterPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,7 +45,7 @@ const RegisterPage = () => {
         throw new Error(errorData.detail || 'Registration failed');
       }
 
-      window.location.href = '/authentication/login';
+      router.push(`/authentication/verify?phone_number=${formData.phone_number}`);
 
     } catch (err: any) {
       setError(err.message);

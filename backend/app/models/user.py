@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Numeric, DateTime, func
 from sqlalchemy.orm import relationship
+
 from app.db.base_class import Base
 
 class User(Base):
@@ -10,6 +11,9 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     phone_number = Column(String, unique=True, index=True)
+    gamertag = Column(String, nullable=True)
+    platform = Column(String, nullable=True)
+    is_phone_verified = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
     wallet_balance = Column(Numeric(10, 2), default=0.00)
@@ -21,3 +25,5 @@ class User(Base):
     notifications = relationship("Notification", back_populates="user")
     phone_verifications = relationship("PhoneVerification", back_populates="user")
     tournaments = relationship("TournamentParticipant", back_populates="user")
+    matchmaking_entry = relationship("MatchmakingQueue", back_populates="user", uselist=False)
+    player_stats = relationship("PlayerStats", back_populates="user", uselist=False)

@@ -1,33 +1,49 @@
-import Link from 'next/link';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Button from './components/ui/button';
 
-export default function Home() {
+const DashboardPage = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.replace('/authentication/login');
+    } else {
+      setLoading(false);
+    }
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+        Loading...
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white text-center p-8">
-      <main className="max-w-4xl">
-        <h1 className="text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">
-          Welcome to WageWars
-        </h1>
-        <p className="mt-4 text-xl text-gray-300">
-          The ultimate platform for competitive Call of Duty wagers. Challenge opponents, join tournaments, and climb the leaderboards.
-        </p>
-        <div className="mt-10 flex justify-center gap-4">
-          <Link href="/authentication/register" passHref>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-3">
-              Get Started
-            </Button>
-          </Link>
-          <Link href="/authentication/login" passHref>
-            <Button className="bg-gray-700 hover:bg-gray-600 text-lg px-8 py-3">
-              Login
-            </Button>
-          </Link>
+    <div className="text-white">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold">Dashboard</h1>
+        <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold">
+          Create Match
+        </Button>
+      </div>
+
+      <div>
+        <h2 className="text-2xl font-semibold mb-4">Open Matches</h2>
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <p className="text-gray-400">No open matches right now. Why not create one?</p>
         </div>
-      </main>
-      <footer className="absolute bottom-8 text-gray-500">
-        <p>&copy; {new Date().getFullYear()} WageWars. All rights reserved.</p>
-      </footer>
+      </div>
     </div>
   );
-}
+};
+
+export default DashboardPage;
+
 

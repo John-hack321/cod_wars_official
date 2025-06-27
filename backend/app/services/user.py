@@ -53,7 +53,7 @@ def update_user(db: Session, *, db_user: User, user_in: UserUpdate) -> User:
     return db_user
 
 
-def create_phone_verification(db: Session, phone_number: str) -> PhoneVerification:
+def create_phone_verification(db: Session, *, user_id: int, phone_number: str) -> PhoneVerification:
     """Generates and stores a new phone verification code."""
     code = str(random.randint(100000, 999999))
     expires_at = datetime.utcnow() + timedelta(minutes=10)
@@ -67,7 +67,7 @@ def create_phone_verification(db: Session, phone_number: str) -> PhoneVerificati
         verification_entry.expires_at = expires_at
     else:
         verification_entry = PhoneVerification(
-            phone_number=phone_number, code=code, expires_at=expires_at
+            user_id=user_id, phone_number=phone_number, code=code, expires_at=expires_at
         )
     db.add(verification_entry)
     db.commit()

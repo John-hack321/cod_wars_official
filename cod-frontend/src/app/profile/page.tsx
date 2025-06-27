@@ -40,10 +40,10 @@ const ProfilePage = () => {
       try {
         // Fetch profile and matches in parallel
         const [profileResponse, matchesResponse] = await Promise.all([
-          fetch('http://localhost:8000/users/me', {
+          fetch('http://localhost:8000/api/v1/auth/me', {
             headers: { 'Authorization': `Bearer ${token}` },
           }),
-          fetch('http://localhost:8000/matches/my-matches', {
+          fetch('http://localhost:8000/api/v1/matches/me', {
             headers: { 'Authorization': `Bearer ${token}` },
           }),
         ]);

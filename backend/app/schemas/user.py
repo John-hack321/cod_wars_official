@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
 
@@ -24,6 +24,13 @@ class User(UserBase):
     is_superuser: bool
     wallet_balance: float
     created_at: datetime
+    cod_username: str = Field(alias="gamertag")
+    platform: str
+    profile_picture: Optional[str] = None
+
+    class ConfigDict:
+        from_attributes = True
+        populate_by_name = True
 
     class Config:
         from_attributes = True

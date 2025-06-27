@@ -1,8 +1,11 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
-from app.core.security import get_password_hash, verify_password
+from app.core.security import (
+    get_password_hash, verify_password, create_access_token
+)
 from app.models.user import User
+from app.models.phone_verification import PhoneVerification
 from app.schemas.user import UserCreate
 
 def get_user_by_email(db: Session, email: str) -> User | None:
@@ -12,6 +15,10 @@ def get_user_by_email(db: Session, email: str) -> User | None:
 def get_user_by_username(db: Session, username: str) -> User | None:
     """Fetches a user from the database by their username."""
     return db.query(User).filter(User.username == username).first()
+
+def get_user_by_phone(db: Session, phone_number: str) -> User | None:
+    """Fetches a user from the database by their phone number."""
+    return db.query(User).filter(User.phone_number == phone_number).first()
 
 def create_user(db: Session, user: UserCreate) -> User:
     """Creates a new user in the database after validating input."""
@@ -31,7 +38,7 @@ def create_user(db: Session, user: UserCreate) -> User:
         email=user.email,
         username=user.username,
         hashed_password=hashed_password,
-        phone=user.phone_number,
+        phone_number=user.phone_number,
         gamertag=user.cod_username,
         platform=user.platform
     )
@@ -48,4 +55,26 @@ def authenticate_user(db: Session, username: str, password: str) -> User | None:
     if not verify_password(password, user.hashed_password):
         return None
     return user
+
+def verify_phone_code(db: Session, *, phone_number: str, code: str) -> bool:
+    """Verifies a phone number using the provided code."""
+    verification_entry = (
+        db.query(PhoneVerification)
+        .filter(PhoneVerification.phone_number == phone_number)
+        .first()
+    )
+
+    if not verification_entry or verification_entry.code != code:
+        return False
+
+    user = get_user_by_phone(db, phone_number=phone_number)
+    if not user:
+        return False
+
+    user.is_phone_verified = True
+    db.add(user)
+    db.delete(verification_entry)
+    db.commit()
+
+    return True
 

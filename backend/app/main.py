@@ -6,8 +6,25 @@ from app.core.config import settings
 from app.db.base_class import Base # Changed from app.db.base
 from app.db.session import engine
 
+
+# --- TEMPORARY CODE TO RESET THE USERS TABLE ---
+# This will delete the existing users table and all its data
+# to apply the new schema changes (gamertag, platform).
+# This should be removed after the first successful run.
+print("--- DROPPING USERS TABLE TO UPDATE SCHEMA ---")
+try:
+    # Import the User model to ensure its metadata is loaded
+    from app.models.user import User
+    Base.metadata.drop_all(bind=engine)
+    print("--- USERS TABLE DROPPED SUCCESSFULLY ---")
+except Exception as e:
+    print(f"--- ERROR DROPPING TABLE (might be the first run): {e} ---")
+# --- END OF TEMPORARY CODE ---
+
 # Create all tables
+print("--- CREATING ALL TABLES ---")
 Base.metadata.create_all(bind=engine)
+print("--- ALL TABLES CREATED ---")
 
 app = FastAPI(
     title="WageWars API",

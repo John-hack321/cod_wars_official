@@ -25,22 +25,27 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
+      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: new URLSearchParams(formData).toString(),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed');
+        if (response.status === 403 && errorData.detail?.error_code === 'PHONE_NOT_VERIFIED') {
+          router.push(`/authentication/verify?phone_number=${errorData.detail.phone_number}`);
+          return; // Stop further execution
+        }
+        const errorMessage = typeof errorData.detail === 'string' ? errorData.detail : 'Login failed';
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
       localStorage.setItem('token', data.access_token);
-      router.push('/profile'); // Use Next.js router for client-side navigation
+      router.push('/');
 
     } catch (err: any) {
       setError(err.message);
